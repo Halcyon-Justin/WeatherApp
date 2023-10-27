@@ -23,3 +23,4 @@
 2023-10-26T11:36:02.686-06:00  INFO 267897 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
 2023-10-26T11:36:02.819-06:00  INFO 267897 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
 2023-10-26T11:36:02.852-06:00  INFO 267897 --- [restartedMain] com.weather.app.AppApplication           : Started AppApplication in 10.466 seconds (process running for 12.381)
+
