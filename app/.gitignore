@@ -31,3 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+
+## Various Files ##
+weatherapp.log
