@@ -1,5 +1,6 @@
 package com.weather.app.services;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import com.weather.app.models.GeocodeData;
@@ -9,10 +10,10 @@ import com.fasterxml.jackson.databind.JsonNode; // Import Jackson JsonNode
 public class WeatherService {
     //@Value("${google.maps.api.key}")
 
+    @Value("${weather.api.key}")
+    private String apiKey;
 
-    private String apiKey = "AIzaSyBy8_dE8kNwMSPwN39SEcsbDkZbdBaWAOY";
-
-    private RestTemplate restTemplate;
+    private RestTemplate restTemplate = new RestTemplate();
 
     public GeocodeData zipToGeoCode(String zip) {
         // Construct the URL with the provided zip code and API key
