@@ -1,15 +1,23 @@
 package com.weather.app.services;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.JsonNode; // Import Jackson JsonNode
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.weather.app.models.GeocodeData;
 
 @Service
 public class WeatherService {
-    // @Value("${google.maps.api.key}")
 
     @Value("${weather.api.key}")
     private String apiKey;
@@ -28,7 +36,9 @@ public class WeatherService {
         // Make 3rd call, passing in populated lat and long and GridId
         JsonNode weatherJson = getHourlyWeather(geoData);
 
-        return weatherJson;
+        JsonNode sevenDayForecast = sevenDayHighLows(weatherJson);
+
+        return sevenDayForecast;
         // Do any other necessary data manipulation, return final result to
         // WeatherController as JSON
 
@@ -73,7 +83,7 @@ public class WeatherService {
             JsonNode response = restTemplate.getForObject(gridIdApiCall, JsonNode.class);
 
             if (response != null) {
-                // We grab gridId from repsonse object
+                // Grab gridId from repsonse object
                 JsonNode gridIdNode = response.at("/properties");
                 gridId = gridIdNode.get("gridId").asText();
                 geoData.setGridId(gridId);
@@ -88,20 +98,21 @@ public class WeatherService {
         }
     }
 
-    public JsonNode getHourlyWeather(GeocodeData geoData) {
-        
+    private JsonNode getHourlyWeather(GeocodeData geoData) {
+
         String gridId = geoData.getGridId();
         int lat = Math.abs((int) geoData.getLat());
         int lng = Math.abs((int) geoData.getLng());
-        
-        String forecastApi = "https://api.weather.gov/gridpoints/" + gridId + "/" + lat + "," + lng + "/forecast/hourly";
+
+        String forecastApi = "https://api.weather.gov/gridpoints/" + gridId + "/" + lat + "," + lng
+                + "/forecast/hourly";
 
         try {
             // Make the HTTP request to the Open Weather API
             JsonNode response = restTemplate.getForObject(forecastApi, JsonNode.class);
 
             if (response != null) {
-                // We grab gridId from repsonse object
+                // Grab gridId from repsonse object
                 JsonNode weatherNode = response;
 
                 return weatherNode;
@@ -113,4 +124,47 @@ public class WeatherService {
             return null;
         }
     }
+
+    public JsonNode sevenDayHighLows(JsonNode hourlyWeatherData) {
+        Map<String, List<Integer>> dayTemperatures = new HashMap<>();
+
+        if (hourlyWeatherData != null) {
+            for (JsonNode period : hourlyWeatherData.get("properties").get("periods")) {
+                String startTime = period.get("startTime").asText();
+                String day = startTime.substring(0, 10); // Extract day part (e.g., "2023-11-01")
+
+                if (!dayTemperatures.containsKey(day)) {
+                    dayTemperatures.put(day, new ArrayList<>());
+                }
+
+                int temperature = period.get("temperature").asInt();
+                dayTemperatures.get(day).add(temperature);
+            }
+        }
+
+        JsonNodeFactory factory = JsonNodeFactory.instance;
+        ObjectNode result = factory.objectNode();
+        ArrayNode highLows = factory.arrayNode();
+
+        for (Map.Entry<String, List<Integer>> entry : dayTemperatures.entrySet()) {
+            String day = entry.getKey();
+            List<Integer> temperatures = entry.getValue();
+
+            if (!temperatures.isEmpty()) {
+                int maxTemp = Collections.max(temperatures);
+                int minTemp = Collections.min(temperatures);
+
+                ObjectNode dayHighLow = factory.objectNode();
+                dayHighLow.put("day", day);
+                dayHighLow.put("highTemperature", maxTemp);
+                dayHighLow.put("lowTemperature", minTemp);
+
+                highLows.add(dayHighLow);
+            }
+        }
+
+        result.set("highLows", highLows);
+        return result;
+    }
+
 }
