@@ -1,16 +1,17 @@
 package com.weather.app.services;
 
-import java.util.ArrayList;
+import java.util.AbstractMap;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import com.fasterxml.jackson.databind.JsonNode; // Import Jackson JsonNode
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -126,45 +127,33 @@ public class WeatherService {
     }
 
     public JsonNode sevenDayHighLows(JsonNode hourlyWeatherData) {
-        Map<String, List<Integer>> dayTemperatures = new HashMap<>();
-
-        if (hourlyWeatherData != null) {
-            for (JsonNode period : hourlyWeatherData.get("properties").get("periods")) {
-                String startTime = period.get("startTime").asText();
-                String day = startTime.substring(0, 10); // Extract day part (e.g., "2023-11-01")
-
-                if (!dayTemperatures.containsKey(day)) {
-                    dayTemperatures.put(day, new ArrayList<>());
-                }
-
-                int temperature = period.get("temperature").asInt();
-                dayTemperatures.get(day).add(temperature);
-            }
-        }
-
         JsonNodeFactory factory = JsonNodeFactory.instance;
-        ObjectNode result = factory.objectNode();
-        ArrayNode highLows = factory.arrayNode();
 
-        for (Map.Entry<String, List<Integer>> entry : dayTemperatures.entrySet()) {
-            String day = entry.getKey();
-            List<Integer> temperatures = entry.getValue();
+        Map<String, List<Integer>> dayTemperatures = StreamSupport.stream(
+                hourlyWeatherData.get("properties").get("periods").spliterator(), false)
+                .map(period -> new AbstractMap.SimpleEntry<>(
+                        period.get("startTime").asText().substring(0, 10),
+                        period.get("temperature").asInt()))
+                .collect(Collectors.groupingBy(
+                        Map.Entry::getKey,
+                        Collectors.mapping(Map.Entry::getValue, Collectors.toList())));
 
-            if (!temperatures.isEmpty()) {
-                int maxTemp = Collections.max(temperatures);
-                int minTemp = Collections.min(temperatures);
+        ArrayNode highLows = dayTemperatures.entrySet().stream()
+                .filter(entry -> !entry.getValue().isEmpty())
+                .map(entry -> {
+                    int maxTemp = Collections.max(entry.getValue());
+                    int minTemp = Collections.min(entry.getValue());
 
-                ObjectNode dayHighLow = factory.objectNode();
-                dayHighLow.put("day", day);
-                dayHighLow.put("highTemperature", maxTemp);
-                dayHighLow.put("lowTemperature", minTemp);
+                    ObjectNode dayHighLow = factory.objectNode();
+                    dayHighLow.put("day", entry.getKey());
+                    dayHighLow.put("highTemperature", maxTemp);
+                    dayHighLow.put("lowTemperature", minTemp);
 
-                highLows.add(dayHighLow);
-            }
-        }
+                    return dayHighLow;
+                })
+                .collect(factory::arrayNode, ArrayNode::add, ArrayNode::addAll);
 
-        result.set("highLows", highLows);
-        return result;
+        return factory.objectNode().set("highLows", highLows);
     }
 
 }

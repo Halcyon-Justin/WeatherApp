@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.weather.app.services.WeatherService;
 
-
 @RestController
 @RequestMapping("/weather")
 public class WeatherController {
