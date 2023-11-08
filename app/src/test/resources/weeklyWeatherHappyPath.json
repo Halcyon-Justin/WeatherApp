@@ -1,0 +1,84 @@
+{
+    "results": [
+        {
+            "address_components": [
+                {
+                    "long_name": "80303",
+                    "short_name": "80303",
+                    "types": [
+                        "postal_code"
+                    ]
+                },
+                {
+                    "long_name": "Boulder",
+                    "short_name": "Boulder",
+                    "types": [
+                        "locality",
+                        "political"
+                    ]
+                },
+                {
+                    "long_name": "Boulder County",
+                    "short_name": "Boulder County",
+                    "types": [
+                        "administrative_area_level_2",
+                        "political"
+                    ]
+                },
+                {
+                    "long_name": "Colorado",
+                    "short_name": "CO",
+                    "types": [
+                        "administrative_area_level_1",
+                        "political"
+                    ]
+                },
+                {
+                    "long_name": "United States",
+                    "short_name": "US",
+                    "types": [
+                        "country",
+                        "political"
+                    ]
+                }
+            ],
+            "formatted_address": "Boulder, CO 80303, USA",
+            "geometry": {
+                "bounds": {
+                    "northeast": {
+                        "lat": 40.020109,
+                        "lng": -105.1310789
+                    },
+                    "southwest": {
+                        "lat": 39.90999,
+                        "lng": -105.295357
+                    }
+                },
+                "location": {
+                    "lat": 40.0005378,
+                    "lng": -105.2077798
+                },
+                "location_type": "APPROXIMATE",
+                "viewport": {
+                    "northeast": {
+                        "lat": 40.020109,
+                        "lng": -105.1310789
+                    },
+                    "southwest": {
+                        "lat": 39.90999,
+                        "lng": -105.295357
+                    }
+                }
+            },
+            "place_id": "ChIJY5_VlWvta4cR5oUdkXJ6Iew",
+            "postcode_localities": [
+                "Boulder",
+                "Eldorado Springs"
+            ],
+            "types": [
+                "postal_code"
+            ]
+        }
+    ],
+    "status": "OK"
+}
