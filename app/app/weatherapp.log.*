@@ -1,0 +1,10 @@
+2023-11-08T17:28:17.903-07:00  INFO 44613 --- [main] com.weather.app.AppApplicationTests      : Starting AppApplicationTests using Java 17.0.8.1 with PID 44613 (started by dev in /home/dev/Code/Spring_Boot_WeatherAgg/WeatherApp/app)
+2023-11-08T17:28:17.905-07:00  INFO 44613 --- [main] com.weather.app.AppApplicationTests      : The following 1 profile is active: "dev"
+2023-11-08T17:28:20.072-07:00  INFO 44613 --- [main] com.weather.app.AppApplicationTests      : Started AppApplicationTests in 2.702 seconds (process running for 4.198)
+2023-11-08T17:28:20.675-07:00  INFO 44613 --- [main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [AppApplicationTest]: AppApplicationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2023-11-08T17:29:07.476-07:00  INFO 45044 --- [main] com.weather.app.AppApplicationTests      : Starting AppApplicationTests using Java 17.0.8.1 with PID 45044 (started by dev in /home/dev/Code/Spring_Boot_WeatherAgg/WeatherApp/app)
+2023-11-08T17:29:07.479-07:00  INFO 45044 --- [main] com.weather.app.AppApplicationTests      : The following 1 profile is active: "dev"
+2023-11-08T17:29:09.160-07:00  INFO 45044 --- [main] com.weather.app.AppApplicationTests      : Started AppApplicationTests in 2.052 seconds (process running for 3.317)
+2023-11-08T17:39:31.150-07:00  INFO 48434 --- [main] com.weather.app.AppApplicationTests      : Starting AppApplicationTests using Java 17.0.8.1 with PID 48434 (started by dev in /home/dev/Code/Spring_Boot_WeatherAgg/WeatherApp/app)
+2023-11-08T17:39:31.152-07:00  INFO 48434 --- [main] com.weather.app.AppApplicationTests      : The following 1 profile is active: "dev"
+2023-11-08T17:39:32.781-07:00  INFO 48434 --- [main] com.weather.app.AppApplicationTests      : Started AppApplicationTests in 2.078 seconds (process running for 3.056)
