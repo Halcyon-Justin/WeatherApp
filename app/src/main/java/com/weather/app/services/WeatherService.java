@@ -40,8 +40,6 @@ public class WeatherService {
         JsonNode sevenDayForecast = sevenDayHighLows(weatherJson);
 
         return sevenDayForecast;
-        // Do any other necessary data manipulation, return final result to
-        // WeatherController as JSON
 
     }
 
