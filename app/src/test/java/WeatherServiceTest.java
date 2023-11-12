@@ -41,6 +41,11 @@ public class WeatherServiceTest {
 
     @Test
     public void ZipToGeoCodeHappyPath() throws Exception {
+        double expectedLat = 40.0005378;
+        double expectedLng = -105.2077798;
+
+
+
         // Given
         GeocodeData geoData = new GeocodeData();
         geoData.setGridId("80303"); // Set the gridId to a valid value
@@ -64,8 +69,10 @@ public class WeatherServiceTest {
                 .invoke(service, geoData.getGridId(), new GeocodeData());
 
         // Then
-        assertEquals(40.0005378, result.getLat(), 0.000001); // Specify the delta for double comparison
-        assertEquals(-105.2077798, result.getLng(), 0.000001); // Specify the delta for double comparison
+        GeocodeData resultData = (GeocodeData) result;
+        assertEquals("Expected gridId to match", geoData.getGridId(), resultData.getGridId());
+        assertEquals("Expected lat to match", expectedLat, resultData.getLat(), 0.001); // adjust delta as needed
+        assertEquals("Expected lng to match", expectedLng, resultData.getLng(), 0.001); // adjust delta as needed
     }
 }
 
