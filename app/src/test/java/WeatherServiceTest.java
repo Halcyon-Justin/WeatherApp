@@ -52,26 +52,20 @@ public class WeatherServiceTest {
 
         // Mock the restTemplate response for zipToGeoCode method
         PowerMockito.mockStatic(WeatherService.class);
-        PowerMockito.when(WeatherService.class, "zipToGeoCode", ArgumentMatchers.any(), ArgumentMatchers.any())
-                .thenReturn(new GeocodeData());
+        PowerMockito.when(WeatherService.class, "zipToGeoCode", ArgumentMatchers.anyString(), ArgumentMatchers.any(GeocodeData.class))
+                .thenCallRealMethod(); // Mock the method to call the real implementation
 
         // Mock the restTemplate response for getHourlyWeather method
         PowerMockito.when(restTemplate.getForObject(ArgumentMatchers.anyString(), ArgumentMatchers.eq(JsonNode.class)))
                 .thenReturn(mockResponse);
 
         // When
-        Object result = PowerMockito.method(WeatherService.class, "getHourlyWeather", GeocodeData.class)
-                .invoke(service, geoData);
+        GeocodeData result = (GeocodeData) PowerMockito.method(WeatherService.class, "zipToGeoCode", String.class, GeocodeData.class)
+                .invoke(service, geoData.getGridId(), new GeocodeData());
 
         // Then
-        JsonNode resultNode = (JsonNode) result;
-        assertEquals(mockResponse, resultNode);
+        assertEquals(40.0005378, result.getLat(), 0.000001); // Specify the delta for double comparison
+        assertEquals(-105.2077798, result.getLng(), 0.000001); // Specify the delta for double comparison
     }
 }
-
-
-
-
-
-
 

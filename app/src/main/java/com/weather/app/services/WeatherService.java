@@ -1,6 +1,5 @@
 package com.weather.app.services;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 
 import java.util.AbstractMap;
 import java.util.Collections;
@@ -21,6 +20,8 @@ import com.weather.app.models.GeocodeData;
 
 @Service
 public class WeatherService {
+
+    public static final String GOOGLE_API_URL = null;
 
     @Value("${weather.api.key}")
     private String apiKey;

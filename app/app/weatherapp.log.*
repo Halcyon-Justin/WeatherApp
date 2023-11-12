@@ -7,3 +7,6 @@
 2023-11-12T10:38:28.431-07:00  INFO 35468 --- [main] com.weather.app.AppApplicationTests      : Starting AppApplicationTests using Java 17.0.8.1 with PID 35468 (started by dev in /home/dev/Code/Spring_Boot_WeatherAgg/WeatherApp/app)
 2023-11-12T10:38:28.432-07:00  INFO 35468 --- [main] com.weather.app.AppApplicationTests      : The following 1 profile is active: "dev"
 2023-11-12T10:38:30.158-07:00  INFO 35468 --- [main] com.weather.app.AppApplicationTests      : Started AppApplicationTests in 2.109 seconds (process running for 3.157)
+2023-11-12T10:54:22.788-07:00  INFO 39939 --- [main] com.weather.app.AppApplicationTests      : Starting AppApplicationTests using Java 17.0.8.1 with PID 39939 (started by dev in /home/dev/Code/Spring_Boot_WeatherAgg/WeatherApp/app)
+2023-11-12T10:54:22.790-07:00  INFO 39939 --- [main] com.weather.app.AppApplicationTests      : The following 1 profile is active: "dev"
+2023-11-12T10:54:24.503-07:00  INFO 39939 --- [main] com.weather.app.AppApplicationTests      : Started AppApplicationTests in 2.084 seconds (process running for 3.25)
