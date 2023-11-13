@@ -1,4 +1,0 @@
-2023-11-08T12:33:37.896-07:00  INFO 804668 --- [main] WeatherServiceTest                       : Starting WeatherServiceTest using Java 17.0.8.1 with PID 804668 (started by dev in /home/dev/Code/Spring_Boot_WeatherAgg/WeatherApp/app)
-2023-11-08T12:33:37.906-07:00  INFO 804668 --- [main] WeatherServiceTest                       : The following 1 profile is active: "dev"
-2023-11-08T12:33:39.321-07:00  INFO 804668 --- [main] WeatherServiceTest                       : Started WeatherServiceTest in 1.842 seconds (process running for 2.722)
-2023-11-08T12:33:39.551-07:00  INFO 804668 --- [main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [AppApplicationTest]: AppApplicationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.

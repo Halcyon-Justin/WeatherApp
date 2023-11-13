@@ -1,11 +1,13 @@
 package com.weather.app.services;
 
+
 import java.util.AbstractMap;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -20,10 +22,12 @@ import com.weather.app.models.GeocodeData;
 @Service
 public class WeatherService {
 
-    @Value("${weather.api.key}")
-    private String apiKey;
+    public static final String GOOGLE_API_URL = null;
 
-    private RestTemplate restTemplate = new RestTemplate();
+    @Value("${weather.api.key}")
+    String apiKey;
+
+    RestTemplate restTemplate = new RestTemplate();
 
     public JsonNode getWeeklyWeather(String zipCode) {
         // Initialize GeocodeData empty object
@@ -43,7 +47,7 @@ public class WeatherService {
 
     }
 
-    private GeocodeData zipToGeoCode(String zip, GeocodeData geoData) {
+    GeocodeData zipToGeoCode(String zip, GeocodeData geoData) {
         // Construct the URL with the provided zip code and API key
         String googleApiUrl = "https://maps.googleapis.com/maps/api/geocode/json?address=" + zip + "&key=" + apiKey;
 
@@ -70,7 +74,7 @@ public class WeatherService {
         }
     }
 
-    private GeocodeData getGridId(GeocodeData geoData) {
+    GeocodeData getGridId(GeocodeData geoData) {
 
         String gridId;
         String lat = geoData.getLat() + "";
@@ -97,7 +101,7 @@ public class WeatherService {
         }
     }
 
-    private JsonNode getHourlyWeather(GeocodeData geoData) {
+    JsonNode getHourlyWeather(GeocodeData geoData) {
 
         String gridId = geoData.getGridId();
         int lat = Math.abs((int) geoData.getLat());
