@@ -29,9 +29,8 @@ public class WeatherService {
 
     public JsonNode getWeeklyWeather(String zipCode) {
         // Initialize GeocodeData empty object
-        GeocodeData geoData = new GeocodeData();
 
-        geoData = zipToGeoCode(zipCode, geoData);
+        GeocodeData geoData = zipToGeoCode(zipCode);
 
         // Make 2nd call, using populated GeocodeData lat and long. Populate GridId.
         geoData = getGridId(geoData);
@@ -45,7 +44,10 @@ public class WeatherService {
 
     }
 
-    GeocodeData zipToGeoCode(String zip, GeocodeData geoData) {
+    GeocodeData zipToGeoCode(String zip) {
+
+        GeocodeData geoData = GeocodeData.builder().build();
+        
         // Construct the URL with the provided zip code and API key
         String googleApiUrl = "https://maps.googleapis.com/maps/api/geocode/json?address=" + zip + "&key=" + apiKey;
         System.out.println(googleApiUrl);
