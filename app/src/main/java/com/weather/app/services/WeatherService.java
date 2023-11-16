@@ -1,13 +1,11 @@
 package com.weather.app.services;
 
-
 import java.util.AbstractMap;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -31,9 +29,8 @@ public class WeatherService {
 
     public JsonNode getWeeklyWeather(String zipCode) {
         // Initialize GeocodeData empty object
-        GeocodeData geoData = new GeocodeData();
 
-        geoData = zipToGeoCode(zipCode, geoData);
+        GeocodeData geoData = zipToGeoCode(zipCode);
 
         // Make 2nd call, using populated GeocodeData lat and long. Populate GridId.
         geoData = getGridId(geoData);
@@ -47,10 +44,13 @@ public class WeatherService {
 
     }
 
-    GeocodeData zipToGeoCode(String zip, GeocodeData geoData) {
+    GeocodeData zipToGeoCode(String zip) {
+
+        GeocodeData geoData = GeocodeData.builder().build();
+        
         // Construct the URL with the provided zip code and API key
         String googleApiUrl = "https://maps.googleapis.com/maps/api/geocode/json?address=" + zip + "&key=" + apiKey;
-
+        System.out.println(googleApiUrl);
         try {
             // Make the HTTP request to the Google Geocoding API
             JsonNode response = restTemplate.getForObject(googleApiUrl, JsonNode.class);
