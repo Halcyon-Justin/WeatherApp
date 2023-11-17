@@ -27,9 +27,8 @@ public class WeatherService {
 
     RestTemplate restTemplate = new RestTemplate();
 
-    public JsonNode getWeeklyWeather(String zipCode) {
+    public JsonNode getWeeklyWeather(String zipCode) throws WeatherServiceException {
         // Initialize GeocodeData empty object
-
         GeocodeData geoData = zipToGeoCode(zipCode);
 
         // Make 2nd call, using populated GeocodeData lat and long. Populate GridId.
@@ -44,37 +43,49 @@ public class WeatherService {
 
     }
 
-    GeocodeData zipToGeoCode(String zip) {
+    GeocodeData zipToGeoCode(String zip) throws WeatherServiceException {
 
         GeocodeData geoData = GeocodeData.builder().build();
-        
+
         // Construct the URL with the provided zip code and API key
         String googleApiUrl = "https://maps.googleapis.com/maps/api/geocode/json?address=" + zip + "&key=" + apiKey;
+
+        //TODO: REMOVE THIS LINE BEFORE PUBLICH APP
         System.out.println(googleApiUrl);
+        
         try {
             // Make the HTTP request to the Google Geocoding API
             JsonNode response = restTemplate.getForObject(googleApiUrl, JsonNode.class);
 
             if (response != null) {
-                // Extract 'lat' and 'lng' from the JSON response
-                JsonNode locationNode = response.at("/results/0/geometry/location");
-                double lat = locationNode.get("lat").asDouble();
-                double lng = locationNode.get("lng").asDouble();
 
-                geoData.setLat(lat);
-                geoData.setLng(lng);
+                // Check the status in the JSON response
+                String status = response.get("status").asText();
 
-                return geoData;
-            } else {
-                return null; // Handle the case when the response is empty or lacks expected data
+                // Check if the status is not equal to "ZERO_RESULTS"
+                if (!"ZERO_RESULTS".equals(status)) {
+                    // Extract 'lat' and 'lng' from the JSON response
+                    JsonNode locationNode = response.at("/results/0/geometry/location");
+                    double lat = locationNode.get("lat").asDouble();
+                    double lng = locationNode.get("lng").asDouble();
+
+                    geoData.setLat(lat);
+                    geoData.setLng(lng);
+
+                    return geoData;
+                } else {
+                    throw new WeatherServiceException(404);
+                }
             }
-        } catch (Exception e) {
-            e.printStackTrace(); // Handle or log the error
-            return null;
+            else {
+                throw new NullPointerException();
+            }
+        } catch (WeatherServiceException e) {
+            throw new WeatherServiceException(e.getErrorCode());
         }
     }
 
-    GeocodeData getGridId(GeocodeData geoData) {
+    GeocodeData getGridId(GeocodeData geoData) throws WeatherServiceException {
 
         String gridId;
         String lat = geoData.getLat() + "";
@@ -93,15 +104,14 @@ public class WeatherService {
 
                 return geoData;
             } else {
-                return null; // Handle the case when the response is empty or lacks expected data
+                throw new WeatherServiceException(402);
             }
-        } catch (Exception e) {
-            e.printStackTrace(); // Handle or log the error
-            return null;
+        } catch (WeatherServiceException e) {
+            throw new WeatherServiceException(e.getErrorCode(), e.getCause());
         }
     }
 
-    JsonNode getHourlyWeather(GeocodeData geoData) {
+    JsonNode getHourlyWeather(GeocodeData geoData) throws WeatherServiceException {
 
         String gridId = geoData.getGridId();
         int lat = Math.abs((int) geoData.getLat());
@@ -120,11 +130,10 @@ public class WeatherService {
 
                 return weatherNode;
             } else {
-                return null; // Handle the case when the response is empty or lacks expected data
+                throw new WeatherServiceException(402);
             }
-        } catch (Exception e) {
-            e.printStackTrace(); // Handle or log the error
-            return null;
+        } catch (WeatherServiceException e) {
+            throw new WeatherServiceException(e.getErrorCode(), e.getCause());
         }
     }
 
