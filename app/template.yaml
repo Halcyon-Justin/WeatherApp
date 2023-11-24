@@ -9,7 +9,7 @@ Globals:
     Timeout: 29
 
 Resources:
-  BlogPostsAPI:
+  WeatherAggregatorAPI:
     Type: AWS::Serverless::Api
     Properties:
       StageName: prod
@@ -17,7 +17,7 @@ Resources:
   WeatherAggregatorFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: dev.danvega.serverlessapi.StreamLambdaHandler
+      Handler: com.weather.StreamLambdaHandler::handleRequest
       CodeUri: target/serverless-api-0.0.1-SNAPSHOT-lambda-package.zip
       AutoPublishAlias: live
       SnapStart:
@@ -28,10 +28,10 @@ Resources:
           Properties:
             Path: /{proxy+}
             Method: ANY
-            RestApiId: !Ref BlogPostsAPI
+            RestApiId: !Ref WeatherAggregatorAPI
 
 Outputs:
-  BlogPostsEndpoint:
+  WeatherAggregatorEndpoint:
     Description: Weather Aggregator API Endpoint
     Value:
       Fn::Sub: https://${WeatherAggregatorAPI}.execute-api.${AWS::Region}.amazonaws.com/prod/

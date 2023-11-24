@@ -19,14 +19,11 @@ public class WeatherController {
 
     @GetMapping("/{zipCode}")
     public ResponseEntity<JsonNode> getWeather(@PathVariable String zipCode) {
-        // Call the WeatherService to get GeocodeData
         JsonNode weather = weatherService.getWeeklyWeather(zipCode);
 
         if (weather != null) {
-            // Return the GeocodeData as JSON with a 200 OK status code
             return ResponseEntity.ok(weather);
         } else {
-            // Handle the case when the response is empty or lacks expected data
             return ResponseEntity.notFound().build();
         }
     }
