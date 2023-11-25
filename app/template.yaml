@@ -17,7 +17,7 @@ Resources:
   WeatherAggregatorFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: com.weather.StreamLambdaHandler::handleRequest
+      Handler: com.weather.app.StreamLambdaHandler::handleRequest
       CodeUri: target/serverless-api-0.0.1-SNAPSHOT-lambda-package.zip
       AutoPublishAlias: live
       SnapStart:

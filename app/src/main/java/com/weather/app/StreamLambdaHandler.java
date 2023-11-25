@@ -1,4 +1,4 @@
-package com.weather;
+package com.weather.app;
 
 import com.amazonaws.serverless.exceptions.ContainerInitializationException;
 import com.amazonaws.serverless.proxy.internal.testutils.Timer;
@@ -7,8 +7,6 @@ import com.amazonaws.serverless.proxy.model.AwsProxyResponse;
 import com.amazonaws.serverless.proxy.spring.SpringBootLambdaContainerHandler;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
-
-import jakarta.ws.rs.core.Application;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,7 +18,7 @@ public class StreamLambdaHandler implements RequestStreamHandler {
 
     static {
         try {
-            handler = SpringBootLambdaContainerHandler.getAwsProxyHandler(Application.class);
+            handler = SpringBootLambdaContainerHandler.getAwsProxyHandler(AppApplication.class);
         } catch (ContainerInitializationException e) {
             // if we fail here. We re-throw the exception to force another cold start
             e.printStackTrace();
