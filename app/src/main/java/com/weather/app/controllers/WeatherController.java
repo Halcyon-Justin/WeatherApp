@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.weather.app.exception.WeatherDataException;
 import com.weather.app.services.WeatherService;
 import com.weather.app.services.WeatherServiceException;
 
