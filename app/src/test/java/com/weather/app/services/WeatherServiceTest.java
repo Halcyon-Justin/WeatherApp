@@ -10,7 +10,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.core.io.Resource;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.core.io.ClassPathResource;
@@ -42,9 +41,7 @@ class WeatherServiceTest {
     @Test
     void zipToGeoCode_HappyPath() throws IOException, WeatherServiceException {
         // Load the JSON response from the file
-        Resource resource = new ClassPathResource("ZipToGeoCodeHappyPath.json");
-        String jsonResponse = new String(Files.readAllBytes(resource.getFile().toPath()), StandardCharsets.UTF_8);
-        JsonNode mockResponse = new ObjectMapper().readTree(jsonResponse);
+        JsonNode mockResponse = parseJsonForMock("ZipToGeoCodeHappyPath.json");
 
         // Mock the response from the RestTemplate
         when(restTemplate.getForObject(anyString(), eq(JsonNode.class)))
@@ -71,9 +68,7 @@ class WeatherServiceTest {
         .lng(-105.20777980)
         .build();
 
-        Resource resource = new ClassPathResource("GetGridIdHappyPath.json");
-        String jsonResponse = new String(Files.readAllBytes(resource.getFile().toPath()), StandardCharsets.UTF_8);
-        JsonNode mockResponse = new ObjectMapper().readTree(jsonResponse);
+        JsonNode mockResponse = parseJsonForMock("GetGridIdHappyPath.json");
 
         when(restTemplate.getForObject(anyString(), eq(JsonNode.class)))
         .thenReturn(mockResponse);
@@ -87,37 +82,86 @@ class WeatherServiceTest {
         assertEquals("MPX", result.getGridId());
     }
 
-    // @Test
-    // public void getHourlyWeather_HappyPath() throws IOException {
-    //        //Given
-    //     GeocodeData geo = GeocodeData.builder().lat(40.0005378).lng(-105.2077798).gridId("MPX").build();
-    //     geo.setLat(40.0005378);
-    //     geo.setLng(-105.2077798);
-    //     geo.setGridId("MPX");
+    @Test
+    public void getHourlyWeather_HappyPath() throws IOException, WeatherServiceException {
+           //Given
+        GeocodeData geo = GeocodeData.builder().lat(40.0005378).lng(-105.2077798).gridId("MPX").build();
+        geo.setLat(40.0005378);
+        geo.setLng(-105.2077798);
+        geo.setGridId("MPX");
 
-    //     JsonNode mockResponse = parseJsonForMock("WeeklyWeatherHappyPath.json");
+        JsonNode mockResponse = parseJsonForMock("WeeklyWeatherHappyPath.json");
 
-    //     when(restTemplate.getForObject(anyString(), eq(JsonNode.class)))
-    //     .thenReturn(mockResponse);
+        when(restTemplate.getForObject(anyString(), eq(JsonNode.class)))
+        .thenReturn(mockResponse);
 
-    //     //WHEN
-    //     JsonNode result = weatherService.getHourlyWeather(geo);
+        //WHEN
+        JsonNode result = weatherService.getHourlyWeather(geo);
 
-    //     //THEN
-    //     verify(restTemplate).getForObject("https://api.weather.gov/gridpoints/MPX,40.0005378-105.2077798/forecast/hourly"
-    //      ,JsonNode.class);
+        //THEN
+        verify(restTemplate).getForObject("https://api.weather.gov/gridpoints/MPX/40,105/forecast/hourly"
+         ,JsonNode.class);
 
-    //      assertEquals(mockResponse, result);
+         assertEquals(mockResponse, result);
+    }
 
-    // }
+    @Test
+    public void sevenDayHighLows_HappyPath() throws IOException {
+        // Given
+        JsonNode mockHourlyWeatherResponse = parseJsonForMock("HourlyWeatherHappyPath.json");
+        when(restTemplate.getForObject(anyString(), eq(JsonNode.class)))
+                .thenReturn(mockHourlyWeatherResponse);
+
+        // When
+        JsonNode result = weatherService.sevenDayHighLows(mockHourlyWeatherResponse);
+
+        // Then
+        assertNotNull(result);
+
+        // Add more assertions based on your specific JSON structure
+        // For example, if you know the structure of your JSON, you can verify specific values
+        // Here, we're assuming a structure where each day has "day", "highTemperature", and "lowTemperature"
+        assertEquals("2023-11-20", result.get("highLows").get(0).get("day").asText());
+        assertEquals(22, result.get("highLows").get(0).get("highTemperature").asInt());
+        assertEquals(16, result.get("highLows").get(0).get("lowTemperature").asInt());
+    }
+
+    @Test
+    public void getWeeklyWeather_HappyPath() throws IOException, WeatherServiceException {
+        // Given
+        JsonNode mockZipToGeoCodeResponse = parseJsonForMock("ZipToGeoCodeHappyPath.json");
+        when(restTemplate.getForObject(eq("https://maps.googleapis.com/maps/api/geocode/json?address=80303&key=dummyApiKey"), eq(JsonNode.class)))
+                .thenReturn(mockZipToGeoCodeResponse);
+        
+        JsonNode mockGetGridIdResponse = parseJsonForMock("GetGridIdHappyPath.json");
+        when(restTemplate.getForObject(eq("https://api.weather.gov/points/40.0005378,-105.2077798"), eq(JsonNode.class)))
+                .thenReturn(mockGetGridIdResponse);
+        
+        JsonNode mockHourlyWeatherResponse = parseJsonForMock("HourlyWeatherHappyPath.json");
+        when(restTemplate.getForObject(eq("https://api.weather.gov/gridpoints/MPX/40,105/forecast/hourly"), eq(JsonNode.class)))
+                .thenReturn(mockHourlyWeatherResponse);
+
+        // When
+        JsonNode result = weatherService.getWeeklyWeather("80303");
+
+        // Then
+        assertNotNull(result);
+        assertEquals("2023-11-20", result.get("highLows").get(0).get("day").asText());
+        assertEquals(22, result.get("highLows").get(0).get("highTemperature").asInt());
+        assertEquals(16, result.get("highLows").get(0).get("lowTemperature").asInt());
+
+        verify(restTemplate).getForObject("https://maps.googleapis.com/maps/api/geocode/json?address=80303&key=dummyApiKey", JsonNode.class);
+        verify(restTemplate).getForObject("https://api.weather.gov/points/40.0005378,-105.2077798", JsonNode.class);
+        verify(restTemplate).getForObject("https://api.weather.gov/gridpoints/MPX/40,105/forecast/hourly", JsonNode.class);
+    }
 
 
-
-    // JsonNode parseJsonForMock(String jsonFile) throws IOException {
-    //     Resource resource = new ClassPathResource(jsonFile);
-    //     String jsonResponse = new String(Files.readAllBytes(resource.getFile().toPath()), StandardCharsets.UTF_8);
-    //     JsonNode mockResponse = new ObjectMapper().readTree(jsonResponse);
-    //     return mockResponse;
-    // }
+    //Helper method
+    JsonNode parseJsonForMock(String jsonFile) throws IOException {
+        Resource resource = new ClassPathResource(jsonFile);
+        String jsonResponse = new String(Files.readAllBytes(resource.getFile().toPath()), StandardCharsets.UTF_8);
+        JsonNode mockResponse = new ObjectMapper().readTree(jsonResponse);
+        return mockResponse;
+    }
 
 }

@@ -20,12 +20,13 @@ public class WeatherController {
     private WeatherService weatherService;
 
     @GetMapping("/{zipCode}")
-    public ResponseEntity<JsonNode> getWeather(@PathVariable String zipCode) throws Exception {
-        try {
-            JsonNode weather = weatherService.getWeeklyWeather(zipCode);
+    public ResponseEntity<JsonNode> getWeather(@PathVariable String zipCode) {
+        JsonNode weather = weatherService.getWeeklyWeather(zipCode);
+
+        if (weather != null) {
             return ResponseEntity.ok(weather);
-        } catch (WeatherServiceException e) {
-            return ResponseEntity.internalServerError().build();
+        } else {
+            return ResponseEntity.notFound().build();
         }
     }
 }

@@ -39,6 +39,9 @@ public class WeatherService {
 
         JsonNode sevenDayForecast = sevenDayHighLows(weatherJson);
 
+        //TODO: DELELE THIS
+        System.out.println(sevenDayForecast);
+
         return sevenDayForecast;
 
     }
