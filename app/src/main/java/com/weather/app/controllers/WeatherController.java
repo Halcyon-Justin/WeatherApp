@@ -20,7 +20,7 @@ public class WeatherController {
     private WeatherService weatherService;
 
     @GetMapping("/{zipCode}")
-    public ResponseEntity<JsonNode> getWeather(@PathVariable String zipCode) {
+    public ResponseEntity<JsonNode> getWeather(@PathVariable String zipCode) throws WeatherServiceException {
         JsonNode weather = weatherService.getWeeklyWeather(zipCode);
 
         if (weather != null) {
