@@ -85,7 +85,7 @@ public class WeatherService {
 
             return geoData;
         } catch (WeatherServiceException e) {
-            throw new WeatherServiceException("Could not access weather API and grab gridId.");
+            throw new WeatherServiceException("Could not access weather API and grab Lat and Long values.");
         }
 
     }
