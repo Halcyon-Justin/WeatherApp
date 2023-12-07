@@ -57,7 +57,7 @@ public class WeatherService {
         // Construct the URL with the provided zip code and API key
         String googleApiUrl = "https://maps.googleapis.com/maps/api/geocode/json?address=" + zip + "&key=" + apiKey;
 
-        // TODO: REMOVE THIS LINE BEFORE PUBLICH APP
+        // TODO: REMOVE THIS LINE BEFORE PUBLISH APP
         System.out.println(googleApiUrl);
 
         try {
