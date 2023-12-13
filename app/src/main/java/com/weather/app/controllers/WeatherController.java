@@ -13,7 +13,8 @@ import com.weather.app.services.WeatherService;
 
 @RestController
 @RequestMapping("/weather")
-@CrossOrigin(origins = {"http://localhost:3000", "https://halcyon-justin.github.io/WeatherApp-Frontend/"}, allowCredentials = "true")public class WeatherController {
+//https://halcyon-justin.github.io/WeatherApp-Frontend/
+@CrossOrigin(origins = {"http://localhost:3000", "https://halcyon-justin.github.io"}, allowCredentials = "true")public class WeatherController {
 
     @Autowired
     private WeatherService weatherService;
