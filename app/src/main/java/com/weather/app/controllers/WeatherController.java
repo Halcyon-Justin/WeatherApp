@@ -2,6 +2,7 @@ package com.weather.app.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,7 +13,7 @@ import com.weather.app.services.WeatherService;
 
 @RestController
 @RequestMapping("/weather")
-public class WeatherController {
+@CrossOrigin(origins = {"http://localhost:3000", "https://halcyon-justin.github.io/WeatherApp-Frontend/"}, allowCredentials = "true")public class WeatherController {
 
     @Autowired
     private WeatherService weatherService;
